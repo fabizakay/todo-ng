@@ -21,6 +21,8 @@ enum sortOption{
 export class TodoComponent implements OnInit {
 
   tasks:Task[]= [];
+
+  readonly TASKS_KEY = 'tasks';
   SortEnum = sortOption;
   sort:sortOption=sortOption.NONE;
 
@@ -29,10 +31,15 @@ export class TodoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let savedTasksJson = localStorage.getItem(this.TASKS_KEY);
+    if(savedTasksJson != null){
+      this.tasks = JSON.parse(savedTasksJson);
+    }
+
   }
 
   handleSubmit(addForm:NgForm){
-    let newTask = {name:addForm.value.task, isUpdated:false, isVisible:false};
+    let newTask = {name:addForm.value.task, isUpdated:false, isVisible:true};
     this.tasks.push(newTask);
     addForm.resetForm();
   }
@@ -92,6 +99,9 @@ export class TodoComponent implements OnInit {
       this.tasks.map((task)=>{
         task.isVisible=(task.name.includes(v));
       });
+  }
+  handleSave():void{
+    localStorage.setItem(this.TASKS_KEY,JSON.stringify(this.tasks))
   }
 
 }
