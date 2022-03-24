@@ -5,8 +5,16 @@
 
 <form #addForm = "ngForm" (submit)="handleSubmit(addForm)">
     <input type="text" ngModel name="task">
-    <button class="btn btn-outline-primary" type="submit">Add task</button>
+    <button class="btn btn-primary" type="submit">Add task</button>
 </form>
+<hr>
+    <div>
+        <label for="search">
+            Search:
+            <input type="text" #searchText (keyup)="handleSearch(searchText.value)">
+        </label>
+    </div>
+
 <hr>
 
 <h3>Your Tasks: </h3>
@@ -21,22 +29,25 @@
 <table class="table table-striped">
 <thead>
     <tr>
-        <td>Task</td>
+        <td>Task
+        <span class="sortButton" [class.isSorted]="sort == SortEnum.ASC" (click)="handleSort(SortEnum.ASC)">&uarr;</span>
+        <span class="sortButton" [class.isSorted]="sort == SortEnum.DESC" (click)="handleSort(SortEnum.DESC)">&darr;</span>
+        </td>
         <td>Operations</td>
     </tr>
 </thead>
 <tbody>
-    <tr *ngFor="let t of tasks">
+    <tr *ngFor="let t of tasks"  [hidden]="!t.isVisible">
         <td>
             <span *ngIf="!t.isUpdated">{{t.name }}</span>
             <span *ngIf="t.isUpdated">
-                <input type="text" name="newTask" #newTask>
-                <button type="submit" (click)="handleSubmitUpdate(t.name,newTask.value)">Update</button>
+                <input type="text" name="newTask" #newTask value="{{t.name}}">
+                <button class="btn btn-danger" type="submit" (click)="handleSubmitUpdate(t.name,newTask.value)">Update</button>
             </span>
         </td>
         <td>
-            <button class="btn btn-outline-primary" (click)="handleRemove(t.name)">Remove</button>
-            <button (click)="handleUdate(t)">Update</button>
+            <button class="btn btn btn-primary" (click)="handleRemove(t.name)">Remove</button>
+            <button class="btn btn-danger" (click)="handleUdate(t)">Update</button>
         </td>
     </tr>
 </tbody>
